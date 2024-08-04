@@ -25,16 +25,17 @@ model category {
 }
 
 model user {
-  id             String          @id @default(uuid())
-  username       String          @unique
-  name           String
-  age            Int
-  password       String
-  createdAt      DateTime
-  book           book[]          @relation("author")
-  favoriteBooks  book[]          @relation("favoriteBy")
-  userPreference userPreference? // one to one
-  role           Role            @default(BASIC)
+  id               String          @id @default(uuid())
+  username         String          @unique
+  name             String
+  age              Int
+  password         String
+  createdAt        DateTime?       @default(now())
+  role             Role            @default(BASIC)
+  book             book[]          @relation("author")
+  favoriteBooks    book[]          @relation("favoriteBy")
+  userPreference   userPreference? @relation(fields: [userPreferenceId], references: [id]) // one to one
+  userPreferenceId String?         @unique
 
   // block level attributes
   // @@unique([name, age]) // makes same name and same age restricted but same name different age or same age different name is allowed
@@ -45,8 +46,7 @@ model user {
 model userPreference {
   id           String  @id @default(uuid())
   emailUpdates Boolean
-  user         user    @relation(fields: [userId], references: [id]) // one to one
-  userId       String  @unique // one to one
+  user         user?
 }
 
 enum Role {
