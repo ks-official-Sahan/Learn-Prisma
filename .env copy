@@ -1,0 +1,8 @@
+# MySQL
+DATABASE_URL="mysql://USERNAME:PASSWORD@HOST:PORT/DATABASE"
+
+# PostgreSQL
+# DATABASE_URL="postgresql//USERNAME:PASSWORD@HOST:PORT/DATABASE"
+
+# also change provider on schema.prisma file to relevant database provider
+
