@@ -1,6 +1,6 @@
 # Prisma Demo
 
-Prisma Integration Demo by Sahan Sachintha using typescript and nodejs
+Prisma Integration Demo with MySQL (Relational Databases) by Sahan Sachintha using typescript and nodejs
 
 ## Getting Started
 
