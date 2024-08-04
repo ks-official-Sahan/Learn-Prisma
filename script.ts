@@ -171,10 +171,117 @@ const findMany5 = async () => {
   try {
     const users = await prisma.book.findMany({
       where: {
-        
+        author: {
+          is: {
+            age: 20,
+          },
+          isNot: {
+            age: 25,
+          },
+        },
       },
     });
     console.log(users);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const update = async () => {
+  try {
+    const users = await prisma.user.update({
+      where: {
+        username: "Sahan1", // update requires an unique field
+      },
+      data: {
+        username: "Chathura",
+        age: {
+          increment: 1,
+        },
+      },
+    });
+    console.log(users);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateMany = async () => {
+  try {
+    const users = await prisma.user.updateMany({
+      where: {
+        name: "Sahan1",
+      },
+      data: {
+        name: "Chathura",
+      },
+    });
+    console.log(users);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateMany2 = async () => {
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        name: "Sahan",
+      },
+      include: { userPreference: true },
+    });
+
+    const userPreference = await prisma.userPreference.create({
+      data: {
+        emailUpdates: true,
+        user: {
+          connect: {
+            id: user?.id,
+          },
+        },
+      },
+    });
+
+    const users = await prisma.user.update({
+      where: {
+        username: "Sahan",
+      },
+      data: {
+        userPreference: {
+          // create: {
+          //   emailUpdates: false,
+          // },
+          // connect: {
+          //   id: userPreference.id,
+          // },
+          disconnect: true,
+        },
+      },
+    });
+    console.log(users);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deleteData = async () => {
+  try {
+    const user = await prisma.user.delete({
+      where: {
+        username: "Sahan", // @unique field required
+      },
+    });
+    console.log(user);
+
+    const users = await prisma.user.deleteMany({
+      where: {
+        username: "Sahan",
+      },
+    });
+    console.log(users);
+
+    const allData = await prisma.user.deleteMany();
+    console.log(allData);
   } catch (error) {
     console.log(error);
   }
