@@ -8,15 +8,64 @@ datasource db {
 }
 
 model book {
-  id     Int    @id @default(autoincrement())
-  name   String
-  author user   @relation(fields: [userId], references: [id])
-  userId String
+  id           Int      @id @default(autoincrement())
+  name         String
+  author       user     @relation("author", fields: [userId], references: [id])
+  userId       String
+  favoriteBy   user?    @relation("favoriteBy", fields: [favoriteById], references: [id]) // ? makes field optional
+  favoriteById String?
+  category     category @relation(fields: [categoryId], references: [id]) // one to mant
+  categoryId   String // one to many
+}
+
+model category {
+  id   String @id @default(uuid())
+  name String @unique
+  book book[] // one to many
 }
 
 model user {
-  id       String @id @default(uuid())
-  username String
-  password String
-  book     book[]
+  id             String          @id @default(uuid())
+  username       String          @unique
+  name           String
+  age            Int
+  password       String
+  createdAt      DateTime
+  book           book[]          @relation("author")
+  favoriteBooks  book[]          @relation("favoriteBy")
+  userPreference userPreference? // one to one
+  role           Role            @default(BASIC)
+
+  // block level attributes
+  // @@unique([name, age]) // makes same name and same age restricted but same name different age or same age different name is allowed
+  // @@index([]) // for sorting
+  // @@id([username, password]) // has to remove @id column first, then the username and password will be used to identify records
+}
+
+model userPreference {
+  id           String  @id @default(uuid())
+  emailUpdates Boolean
+  user         user    @relation(fields: [userId], references: [id]) // one to one
+  userId       String  @unique // one to one
+}
+
+enum Role {
+  BASIC
+  ADMIN
+  USER
+}
+
+// custom model and field name
+
+// model my_user { // in database
+//   user_id    Int     @id @default(autoincrement())
+//   first_name String?
+//   last_name  String  @unique
+// }
+model MyUser {
+  userId    Int     @id @default(autoincrement()) @map("user_id")
+  firstName String? @map("first_name") // column name in database as parameter for the field name in the model if we are customizig column names
+  lastName  String  @unique @map("last_name")
+
+  @@map("my_user") // database table name as parameter to map table name to this model if we are customizing column or table names
 }
